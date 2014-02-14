@@ -6,6 +6,25 @@ Visit the project's website at <http://ghost.org>!
 
 Full documentation is available at <http://docs.ghost.org>.
 
+## What is it
+
+It's a simple hack that enables a **very** rudimentary way of multiple users using Ghost. It is currently very limited as:
+
+- any user having an account can add a new user
+- every user is a superuser, so can edit/delete posts of any other user and there is currently no way anyone can notice
+
+However, it is just enough to make Ghost usable in my scenario (and probably in 80% of your scenarios), so here is the code. In order to make it work do:
+
+    git clone https://github.com/mkawalec/Ghost multi_ghost
+    cd multi_ghost
+    npm install
+    grunt init
+
+If you are a more advanced user of git, you know what to do instead:) Just don't forget about *grunt init*, it is needed to compile the themes. You may want to copy your database from your current instance of Ghost, to content/data folder (it is a .db file).
+
+Feel free to report any bugs, as there are probably some.
+
+
 ## Getting Involved
 
 Want to report a bug, request a feature, or help us build or translate Ghost? Check out our in depth guide to [Contributing to Ghost](https://github.com/TryGhost/Ghost/blob/master/CONTRIBUTING.md). We need all the help we can get! You can also join in with our [community](https://github.com/TryGhost/Ghost#community) to keep up-to-date and meet other Ghosters.
