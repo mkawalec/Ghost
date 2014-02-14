@@ -97,7 +97,9 @@ posts = {
             return when.reject({errorCode: 403, message: 'You do not have permission to add posts.'});
         }
 
+        var self = this;
         return canThis(this.user).create.post().then(function () {
+            postData.author_id = self.user;
             return dataProvider.Post.add(postData);
         }, function () {
             return when.reject({errorCode: 403, message: 'You do not have permission to add posts.'});

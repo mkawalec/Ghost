@@ -8,6 +8,7 @@ var _           = require('lodash'),
     config      = require('../config'),
     path        = require('path'),
     api         = require('../api'),
+    dataProvider= require('../models'),
 
     expressServer,
     ONE_HOUR_MS = 60 * 60 * 1000;
@@ -28,35 +29,39 @@ var middleware = {
     // Authenticate a request by redirecting to login if not logged in.
     // We strip /ghost/ out of the redirect parameter for neatness
     auth: function (req, res, next) {
-        if (!req.session.user) {
-            var reqPath = req.path.replace(/^\/ghost\/?/gi, ''),
-                redirect = '',
-                msg;
+        return dataProvider.User.forge().fetch().then(function (users) {
+            if (!req.session.user && users) {
+                var reqPath = req.path.replace(/^\/ghost\/?/gi, ''),
+                    redirect = '',
+                    msg;
 
-            return api.notifications.browse().then(function (notifications) {
-                if (reqPath !== '') {
-                    msg = {
-                        type: 'error',
-                        message: 'Please Sign In',
-                        status: 'passive',
-                        id: 'failedauth'
-                    };
-                    // let's only add the notification once
-                    if (!_.contains(_.pluck(notifications, 'id'), 'failedauth')) {
-                        api.notifications.add(msg);
+                return api.notifications.browse().then(function (notifications) {
+                    if (reqPath !== '') {
+                        msg = {
+                            type: 'error',
+                            message: 'Please Sign In',
+                            status: 'passive',
+                            id: 'failedauth'
+                        };
+                        // let's only add the notification once
+                        if (!_.contains(_.pluck(notifications, 'id'), 'failedauth')) {
+                            api.notifications.add(msg);
+                        }
+                        redirect = '?r=' + encodeURIComponent(reqPath);
                     }
-                    redirect = '?r=' + encodeURIComponent(reqPath);
-                }
-                return res.redirect(config().paths.subdir + '/ghost/signin/' + redirect);
+                    return res.redirect(config().paths.subdir + '/ghost/signin/' + redirect);
+                });
+            }
+            next();
+
             });
-        }
-        next();
     },
 
     // ## AuthApi Middleware
     // Authenticate a request to the API by responding with a 401 and json error details
     authAPI: function (req, res, next) {
-        if (!req.session.user) {
+        var users = dataProvider.User.forge().fetch();
+        if (!req.session.user && users) {
             res.json(401, { error: 'Please sign in' });
             return;
         }
