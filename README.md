@@ -12,6 +12,8 @@ It's a simple hack that enables a **very** rudimentary way of multiple users usi
 
 - any user having an account can add a new user
 - every user is a superuser, so can edit/delete posts of any other user and there is no way anyone can notice
+- there is no way to delete user accounts other than editing the DB
+- adding an account logs you as a newly added user, a logout is advisable
 
 However, it is just enough to make Ghost usable in my scenario (and probably in 80% of your scenarios), so here is the code. In order to make it work do:
 
